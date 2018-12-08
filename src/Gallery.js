@@ -255,6 +255,7 @@ class Gallery extends Component {
             key={"Image-"+idx+"-"+item.src}
             item={item}
             index={idx}
+            DirItem={this.props.DirItem}
             margin={this.props.margin}
             height={this.props.rowHeight}
             isSelectable={this.props.enableImageSelection}

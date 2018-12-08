@@ -34,7 +34,7 @@ class Image extends Component {
             return this.props.tileViewportStyle.call(this);
         var nanoBase64Backgorund = {}
         if(this.props.item.nano) {
-            nanoBase64Backgorund = { 
+            nanoBase64Backgorund = {
                 background: `url(${this.props.item.nano})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center'
@@ -160,7 +160,10 @@ class Image extends Component {
             width: "100%"}}>
             {this.props.item.customOverlay}
         </div>;
-
+        let DirItem = null;
+        if (this.props.DirItem) {
+          DirItem = this.props.DirItem;
+        }
         return (
                 <div className="tile"
             key={"tile-"+this.props.index}
@@ -221,12 +224,12 @@ class Image extends Component {
             key={"tile-viewport-"+this.props.index}
             onClick={this.props.onClick ?
                      (e) => this.props.onClick.call(this, this.props.index, e) : null}>
-                <img
-            key={"img-"+this.props.index}
-            src={this.props.item.thumbnail}
-            alt={alt}
-            title={this.props.item.caption}
-            style={this.thumbnailStyle()} />
+                  {!this.props.item.isDir ? <img
+                      key={"img-"+this.props.index}
+                      src={this.props.item.thumbnail}
+                      alt={alt}
+                      title={this.props.item.caption}
+                      style={this.thumbnailStyle()} />:(DirItem?<DirItem item={this.props.item} />:null)}
                 </div>
                 {this.props.item.thumbnailCaption && (
                         <div className="tile-description"
