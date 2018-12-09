@@ -164,6 +164,12 @@ class Image extends Component {
         if (this.props.DirItem) {
           DirItem = this.props.DirItem;
         }
+        const isDir = this.props.item.isDir;
+        let propClick = this.props.onClick ?
+            (e) => this.props.onClick.call(this, this.props.index, e) : null;
+        if(isDir){
+          propClick = null;
+        }
         return (
                 <div className="tile"
             key={"tile-"+this.props.index}
@@ -222,9 +228,8 @@ class Image extends Component {
                 <div className="tile-viewport"
             style={this.tileViewportStyle()}
             key={"tile-viewport-"+this.props.index}
-            onClick={this.props.onClick ?
-                     (e) => this.props.onClick.call(this, this.props.index, e) : null}>
-                  {!this.props.item.isDir ? <img
+            onClick={propClick}>
+                  {!isDir ? <img
                       key={"img-"+this.props.index}
                       src={this.props.item.thumbnail}
                       alt={alt}
