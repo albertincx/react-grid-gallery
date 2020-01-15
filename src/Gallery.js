@@ -219,7 +219,7 @@ class Gallery extends Component {
 
   renderThumbs(containerWidth, images = this.state.images) {
     if (!images) return [];
-    if (containerWidth == 0) return [];
+    if (containerWidth === 0) return [];
 
     var items = images.slice();
     for (var t in items) {
@@ -384,4 +384,4 @@ Gallery.defaultProps = {
   showLightboxThumbnails: false,
 };
 
-module.exports = Gallery;
+export default Gallery;
