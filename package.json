@@ -1,9 +1,9 @@
 {
   "name": "react-grid-gallery",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Justified gallery component for React.",
   "main": "index.js",
-  "src": "src/index.js",
+  "src": "src/Gallery.js",
   "scripts": {
     "build": "rollup -c"
   },

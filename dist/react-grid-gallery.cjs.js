@@ -843,10 +843,4 @@ Gallery.defaultProps = {
   showLightboxThumbnails: false
 };
 
-var index = {
-  Gallery: Gallery,
-  Image: Image,
-  CheckButton: CheckButton
-};
-
-module.exports = index;
+module.exports = Gallery;

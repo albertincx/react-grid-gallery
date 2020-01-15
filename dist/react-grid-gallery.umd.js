@@ -12959,12 +12959,6 @@
     showLightboxThumbnails: false
   };
 
-  var index$1 = {
-    Gallery: Gallery,
-    Image: Image,
-    CheckButton: CheckButton
-  };
-
-  return index$1;
+  return Gallery;
 
 })));
