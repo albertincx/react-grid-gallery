@@ -4,8 +4,11 @@ changes
 * rollup build: cjs, esm, umd
 * You can pass BackButton component (optional)
 * upgraded modules and react-images
-* integrated [this](https://codepen.io/frcodecamp/pen/OEovqx) Drag'n'Drop Component, now you can pass onDrop method
+* integrated drag n drop component from [codepen](https://codepen.io/frcodecamp/pen/OEovqx). 
+New props:
 
+`isDraggable` (bool) - enable d'n'd feature         
+ `onDrop` (func) - new items order handler 
 
 
 # React Grid Gallery

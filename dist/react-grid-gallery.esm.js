@@ -7,6 +7,8 @@ import _inherits from '@babel/runtime/helpers/esm/inherits';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Carousel, { ModalGateway, Modal } from 'react-images';
+import _objectWithoutProperties from '@babel/runtime/helpers/esm/objectWithoutProperties';
+import _defineProperty from '@babel/runtime/helpers/esm/defineProperty';
 
 var CheckButton = function (_Component) {
   _inherits(CheckButton, _Component);
@@ -318,13 +320,6 @@ var Image = function (_Component) {
       }
 
       var isDir = this.props.item.isDir;
-      var isDir2 = this.props.isDir;
-      console.log('isDir', isDir2);
-
-      if (isDir2) {
-        isDir = true;
-      }
-
       var propClick = this.props.onClick ? function (e) {
         return _this2.props.onClick.call(_this2, _this2.props.index, e);
       } : null;
@@ -437,6 +432,135 @@ Image.defaultProps = {
   isSelectable: true,
   hover: false
 };
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var BoxesGroup = function (_Component) {
+  _inherits(BoxesGroup, _Component);
+
+  function BoxesGroup(props) {
+    var _this;
+
+    _classCallCheck(this, BoxesGroup);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(BoxesGroup).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "swapBoxes", function (fromBox, toBox) {
+      var boxes = _this.state.boxes.slice();
+
+      var fromIndex = -1;
+      var toIndex = -1;
+
+      for (var i = 0; i < boxes.length; i++) {
+        if (boxes[i].id === fromBox.id) {
+          fromIndex = i;
+        }
+
+        if (boxes[i].id === toBox.id) {
+          toIndex = i;
+        }
+      }
+
+      if (fromIndex !== -1 && toIndex !== -1) {
+        var _boxes$fromIndex = boxes[fromIndex],
+            fromId = _boxes$fromIndex.fromId,
+            fromRest = _objectWithoutProperties(_boxes$fromIndex, ["fromId"]);
+
+        var _boxes$toIndex = boxes[toIndex],
+            toId = _boxes$toIndex.toId,
+            toRest = _objectWithoutProperties(_boxes$toIndex, ["toId"]);
+
+        boxes[fromIndex] = _objectSpread({
+          id: fromBox.id
+        }, toRest);
+        boxes[toIndex] = _objectSpread({
+          id: toBox.id
+        }, fromRest);
+
+        _this.setState({
+          boxes: boxes
+        }, function () {
+          return _this.props.onDrop(boxes);
+        });
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleDragStart", function (id) {
+      return function (event) {
+        var fromBox = JSON.stringify({
+          id: id
+        });
+        event.dataTransfer.setData('dragContent', fromBox);
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleDragOver", function () {
+      return function (event) {
+        event.preventDefault();
+        return false;
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "handleDrop", function (id) {
+      return function (event) {
+        event.preventDefault();
+        var fromBox = JSON.parse(event.dataTransfer.getData('dragContent'));
+        var toBox = {
+          id: id
+        };
+
+        _this.swapBoxes(fromBox, toBox);
+
+        return false;
+      };
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "makeBoxes", function () {
+      return _this.state.boxes.map(function (_ref) {
+        var id = _ref.id,
+            el = _ref.el;
+        return React.createElement("div", {
+          key: id,
+          className: "box",
+          draggable: true,
+          onDragStart: _this.handleDragStart(id),
+          onDragOver: _this.handleDragOver(),
+          onDrop: _this.handleDrop(id)
+        }, React.createElement("div", {
+          className: "content"
+        }, _this.props.renderItem(el)));
+      });
+    });
+
+    var _boxes = props.items.map(function (el, ind) {
+      return {
+        el: el,
+        id: ind,
+        name: 'BOX1',
+        color: 'red'
+      };
+    });
+
+    _this.state = {
+      boxes: _boxes
+    };
+    return _this;
+  }
+
+  _createClass(BoxesGroup, [{
+    key: "render",
+    value: function render() {
+      var bbtn = this.props.bbtn;
+      return React.createElement("div", {
+        className: "boxesGroup"
+      }, bbtn, this.makeBoxes());
+    }
+  }]);
+
+  return BoxesGroup;
+}(Component);
 
 var Gallery = function (_Component) {
   _inherits(Gallery, _Component);
@@ -712,7 +836,8 @@ var Gallery = function (_Component) {
       var _this2 = this;
 
       var _this$props = this.props,
-          DraggableGrid = _this$props.DraggableGrid,
+          isDraggable = _this$props.isDraggable,
+          onDrop = _this$props.onDrop,
           backButton = _this$props.backButton;
       var _this$state = this.state,
           lightboxIsOpen = _this$state.lightboxIsOpen,
@@ -721,14 +846,15 @@ var Gallery = function (_Component) {
         if (typeof item.src !== 'undefined') item.idx = idx;
         return _this2.renderItem(item);
       });
-      if (!DraggableGrid) images.unshift(backButton);
+      if (!isDraggable) images.unshift(backButton);
       return React.createElement("div", {
         id: this.props.id,
         className: "ReactGridGallery",
         ref: function ref(c) {
           return _this2._gallery = c;
         }
-      }, DraggableGrid && images.length > 1 ? React.createElement(DraggableGrid, {
+      }, isDraggable && thumbnails.length ? React.createElement(BoxesGroup, {
+        onDrop: onDrop,
         items: thumbnails,
         bbtn: backButton,
         renderItem: this.renderItem
@@ -779,6 +905,8 @@ Gallery.propTypes = {
   enableKeyboardInput: PropTypes.bool,
   imageCountSeparator: PropTypes.string,
   isOpen: PropTypes.bool,
+  isDraggable: PropTypes.bool,
+  onDrop: PropTypes.func,
   onClickImage: PropTypes.func,
   onClickNext: PropTypes.func,
   onClickPrev: PropTypes.func,
