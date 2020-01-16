@@ -2,9 +2,9 @@
 changes
 
 * rollup build: cjs, esm, umd
-* You can pass Draggable or Sortable component (optional)
 * You can pass BackButton component (optional)
 * upgraded modules and react-images
+* integrated [this](https://codepen.io/frcodecamp/pen/OEovqx) Drag'n'Drop Component, now you can pass onDrop method
 
 
 

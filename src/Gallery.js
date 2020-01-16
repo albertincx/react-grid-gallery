@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Carousel, { Modal, ModalGateway } from 'react-images';
 import Image from './Image.js';
+import DraggableGrid from './DraggableGrid.js';
 
 class Gallery extends Component {
   constructor(props) {
@@ -240,21 +241,26 @@ class Gallery extends Component {
   }
 
   render() {
-    const { DraggableGrid, backButton } = this.props;
+    const { isDraggable, onDrop, backButton } = this.props;
 
     const { lightboxIsOpen, thumbnails } = this.state;
     var images = thumbnails.map((item, idx) => {
       if (typeof item.src !== 'undefined') item.idx = idx;
       return this.renderItem(item);
     });
-    if (!DraggableGrid) images.unshift(backButton);
+    if (!isDraggable) images.unshift(backButton);
     return (
       <div id={this.props.id}
            className="ReactGridGallery"
            ref={(c) => this._gallery = c}>
-        {DraggableGrid && images.length > 1 ?
-          <DraggableGrid items={thumbnails} bbtn={backButton}
-                         renderItem={this.renderItem} /> : images}
+        {isDraggable && thumbnails.length ? (
+          <DraggableGrid
+            onDrop={onDrop}
+            items={thumbnails}
+            bbtn={backButton}
+            renderItem={this.renderItem}
+          />
+        ) : images}
         <ModalGateway>
           {lightboxIsOpen && thumbnails.length ? (
             <Modal onClose={this.closeLightbox}>
@@ -311,6 +317,8 @@ Gallery.propTypes = {
   enableKeyboardInput: PropTypes.bool,
   imageCountSeparator: PropTypes.string,
   isOpen: PropTypes.bool,
+  isDraggable: PropTypes.bool,
+  onDrop: PropTypes.func,
   onClickImage: PropTypes.func,
   onClickNext: PropTypes.func,
   onClickPrev: PropTypes.func,
