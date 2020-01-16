@@ -35,7 +35,7 @@ const babelConfig = (
 
 const umdConfig = ({ minify } = {}) => ({
   input: pkg.src,
-  external: ['react', 'react-dom', 'prop-types'],
+  external: ['react', 'react-dom', 'prop-types', 'react-images'],
   output: {
     name: 'ReactGridGallery',
     file: minify ? pkg['umd:main'].replace('.js', '.min.js') : pkg['umd:main'],
@@ -44,6 +44,7 @@ const umdConfig = ({ minify } = {}) => ({
       react: 'React',
       'react-dom': 'ReactDOM',
       'prop-types': 'PropTypes',
+      'react-images': 'Carousel',
     },
   },
   plugins: [

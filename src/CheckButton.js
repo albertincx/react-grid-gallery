@@ -117,4 +117,5 @@ CheckButton.defaultProps = {
   parentHover: false,
   hover: false,
 };
+
 export default CheckButton;

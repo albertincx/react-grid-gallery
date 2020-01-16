@@ -166,7 +166,12 @@ class Image extends Component {
     if (this.props.DirItem) {
       DirItem = this.props.DirItem;
     }
-    const isDir = this.props.item.isDir;
+    let isDir = this.props.item.isDir;
+    const isDir2 = this.props.isDir;
+    console.log('isDir', isDir2);
+    if (isDir2) {
+      isDir = true;
+    }
     let propClick = this.props.onClick ?
       (e) => this.props.onClick.call(this, this.props.index, e) : null;
     if (isDir) {

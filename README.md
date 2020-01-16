@@ -1,4 +1,12 @@
 # Forked "React Grid Gallery"
+changes
+
+* rollup build: cjs, esm, umd
+* You can pass Draggable or Sortable component (optional)
+* You can pass BackButton component (optional)
+* upgraded modules and react-images
+
+
 
 # React Grid Gallery
 

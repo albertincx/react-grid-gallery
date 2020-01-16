@@ -11,7 +11,8 @@ var _inherits = _interopDefault(require('@babel/runtime/helpers/inherits'));
 var PropTypes = _interopDefault(require('prop-types'));
 var React = require('react');
 var React__default = _interopDefault(React);
-var Lightbox = _interopDefault(require('react-images'));
+var Carousel = require('react-images');
+var Carousel__default = _interopDefault(Carousel);
 
 var CheckButton = function (_Component) {
   _inherits(CheckButton, _Component);
@@ -323,6 +324,13 @@ var Image = function (_Component) {
       }
 
       var isDir = this.props.item.isDir;
+      var isDir2 = this.props.isDir;
+      console.log('isDir', isDir2);
+
+      if (isDir2) {
+        isDir = true;
+      }
+
       var propClick = this.props.onClick ? function (e) {
         return _this2.props.onClick.call(_this2, _this2.props.index, e);
       } : null;
@@ -460,6 +468,7 @@ var Gallery = function (_Component) {
     _this.onClickImage = _this.onClickImage.bind(_assertThisInitialized(_this));
     _this.openLightbox = _this.openLightbox.bind(_assertThisInitialized(_this));
     _this.onSelectImage = _this.onSelectImage.bind(_assertThisInitialized(_this));
+    _this.renderItem = _this.renderItem.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -471,7 +480,7 @@ var Gallery = function (_Component) {
   }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(np) {
-      if (this.state.images != np.images || this.props.maxRows != np.maxRows) {
+      if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
         this.setState({
           images: np.images,
           thumbnails: this.renderThumbs(this._gallery.clientWidth, np.images)
@@ -585,31 +594,6 @@ var Gallery = function (_Component) {
       return null;
     }
   }, {
-    key: "getOnClickLightboxThumbnailFn",
-    value: function getOnClickLightboxThumbnailFn() {
-      if (!this.props.onClickLightboxThumbnail && this.props.showLightboxThumbnails) return this.gotoImage;
-      if (this.props.onClickLightboxThumbnail && this.props.showLightboxThumbnails) return this.props.onClickLightboxThumbnail;
-      return null;
-    }
-  }, {
-    key: "getOnClickImageFn",
-    value: function getOnClickImageFn() {
-      if (this.props.onClickImage) return this.props.onClickImage;
-      return this.onClickImage;
-    }
-  }, {
-    key: "getOnClickPrevFn",
-    value: function getOnClickPrevFn() {
-      if (this.props.onClickPrev) return this.props.onClickPrev;
-      return this.gotoPrevious;
-    }
-  }, {
-    key: "getOnClickNextFn",
-    value: function getOnClickNextFn() {
-      if (this.props.onClickNext) return this.props.onClickNext;
-      return this.gotoNext;
-    }
-  }, {
     key: "calculateCutOff",
     value: function calculateCutOff(len, delta, items) {
       var cutoff = [];
@@ -709,67 +693,56 @@ var Gallery = function (_Component) {
       return thumbs;
     }
   }, {
+    key: "renderItem",
+    value: function renderItem(item) {
+      var idx = item.idx;
+      return React__default.createElement(Image, {
+        key: 'Image-' + idx + '-' + item.src,
+        isDir: typeof item.src === 'undefined',
+        item: item,
+        index: idx,
+        DirItem: this.props.DirItem,
+        margin: this.props.margin,
+        height: this.props.rowHeight,
+        isSelectable: this.props.enableImageSelection,
+        onClick: this.getOnClickThumbnailFn(),
+        onSelectImage: this.onSelectImage,
+        tagStyle: this.props.tagStyle,
+        tileViewportStyle: this.props.tileViewportStyle,
+        thumbnailStyle: this.props.thumbnailStyle
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
 
-      var images = this.state.thumbnails.map(function (item, idx) {
-        return React__default.createElement(Image, {
-          key: 'Image-' + idx + '-' + item.src,
-          item: item,
-          index: idx,
-          DirItem: _this2.props.DirItem,
-          margin: _this2.props.margin,
-          height: _this2.props.rowHeight,
-          isSelectable: _this2.props.enableImageSelection,
-          onClick: _this2.getOnClickThumbnailFn(),
-          onSelectImage: _this2.onSelectImage,
-          tagStyle: _this2.props.tagStyle,
-          tileViewportStyle: _this2.props.tileViewportStyle,
-          thumbnailStyle: _this2.props.thumbnailStyle
-        });
+      var _this$props = this.props,
+          DraggableGrid = _this$props.DraggableGrid,
+          backButton = _this$props.backButton;
+      var _this$state = this.state,
+          lightboxIsOpen = _this$state.lightboxIsOpen,
+          thumbnails = _this$state.thumbnails;
+      var images = thumbnails.map(function (item, idx) {
+        if (typeof item.src !== 'undefined') item.idx = idx;
+        return _this2.renderItem(item);
       });
-      var resizeIframeStyles = {
-        height: 0,
-        margin: 0,
-        padding: 0,
-        overflow: 'hidden',
-        borderWidth: 0,
-        position: 'fixed',
-        backgroundColor: 'transparent',
-        width: '100%'
-      };
+      if (!DraggableGrid) images.unshift(backButton);
       return React__default.createElement("div", {
         id: this.props.id,
         className: "ReactGridGallery",
         ref: function ref(c) {
           return _this2._gallery = c;
         }
-      }, React__default.createElement("iframe", {
-        style: resizeIframeStyles,
-        ref: function ref(c) {
-          return c && c.contentWindow && c.contentWindow.addEventListener('resize', _this2.onResize);
-        }
-      }), images, React__default.createElement(Lightbox, {
-        images: this.props.images,
-        backdropClosesModal: this.props.backdropClosesModal,
-        currentImage: this.state.currentImage,
-        preloadNextImage: this.props.preloadNextImage,
-        customControls: this.props.customControls,
-        enableKeyboardInput: this.props.enableKeyboardInput,
-        imageCountSeparator: this.props.imageCountSeparator,
-        isOpen: this.state.lightboxIsOpen,
-        onClickImage: this.getOnClickImageFn(),
-        onClickNext: this.getOnClickNextFn(),
-        onClickPrev: this.getOnClickPrevFn(),
-        showCloseButton: this.props.showCloseButton,
-        showImageCount: this.props.showImageCount,
-        onClose: this.closeLightbox,
-        width: this.props.lightboxWidth,
-        theme: this.props.theme,
-        onClickThumbnail: this.getOnClickLightboxThumbnailFn(),
-        showThumbnails: this.props.showLightboxThumbnails
-      }));
+      }, DraggableGrid && images.length > 1 ? React__default.createElement(DraggableGrid, {
+        items: thumbnails,
+        bbtn: backButton,
+        renderItem: this.renderItem
+      }) : images, React__default.createElement(Carousel.ModalGateway, null, lightboxIsOpen && thumbnails.length ? React__default.createElement(Carousel.Modal, {
+        onClose: this.closeLightbox
+      }, React__default.createElement(Carousel__default, {
+        views: thumbnails
+      })) : null));
     }
   }]);
 

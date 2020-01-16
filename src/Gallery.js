@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Lightbox from 'react-images';
+import Carousel, { Modal, ModalGateway } from 'react-images';
 import Image from './Image.js';
 
 class Gallery extends Component {
@@ -23,6 +23,7 @@ class Gallery extends Component {
     this.onClickImage = this.onClickImage.bind(this);
     this.openLightbox = this.openLightbox.bind(this);
     this.onSelectImage = this.onSelectImage.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   componentDidMount() {
@@ -30,7 +31,7 @@ class Gallery extends Component {
   }
 
   componentWillReceiveProps(np) {
-    if (this.state.images != np.images || this.props.maxRows != np.maxRows) {
+    if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
       this.setState({
         images: np.images,
         thumbnails: this.renderThumbs(this._gallery.clientWidth,
@@ -133,34 +134,6 @@ class Gallery extends Component {
     return null;
   }
 
-  getOnClickLightboxThumbnailFn() {
-    if (!this.props.onClickLightboxThumbnail
-      && this.props.showLightboxThumbnails)
-      return this.gotoImage;
-    if (this.props.onClickLightboxThumbnail
-      && this.props.showLightboxThumbnails)
-      return this.props.onClickLightboxThumbnail;
-    return null;
-  }
-
-  getOnClickImageFn() {
-    if (this.props.onClickImage)
-      return this.props.onClickImage;
-    return this.onClickImage;
-  }
-
-  getOnClickPrevFn() {
-    if (this.props.onClickPrev)
-      return this.props.onClickPrev;
-    return this.gotoPrevious;
-  }
-
-  getOnClickNextFn() {
-    if (this.props.onClickNext)
-      return this.props.onClickNext;
-    return this.gotoNext;
-  }
-
   calculateCutOff(len, delta, items) {
     var cutoff = [];
     var cutsum = 0;
@@ -247,62 +220,48 @@ class Gallery extends Component {
     return thumbs;
   }
 
+  renderItem(item) {
+    let idx = item.idx;
+    return <Image
+      key={'Image-' + idx + '-' + item.src}
+      isDir={typeof item.src === 'undefined'}
+      item={item}
+      index={idx}
+      DirItem={this.props.DirItem}
+      margin={this.props.margin}
+      height={this.props.rowHeight}
+      isSelectable={this.props.enableImageSelection}
+      onClick={this.getOnClickThumbnailFn()}
+      onSelectImage={this.onSelectImage}
+      tagStyle={this.props.tagStyle}
+      tileViewportStyle={this.props.tileViewportStyle}
+      thumbnailStyle={this.props.thumbnailStyle}
+    />;
+  }
+
   render() {
-    var images = this.state.thumbnails.map((item, idx) => {
-      return <Image
-        key={'Image-' + idx + '-' + item.src}
-        item={item}
-        index={idx}
-        DirItem={this.props.DirItem}
-        margin={this.props.margin}
-        height={this.props.rowHeight}
-        isSelectable={this.props.enableImageSelection}
-        onClick={this.getOnClickThumbnailFn()}
-        onSelectImage={this.onSelectImage}
-        tagStyle={this.props.tagStyle}
-        tileViewportStyle={this.props.tileViewportStyle}
-        thumbnailStyle={this.props.thumbnailStyle}
-      />;
+    const { DraggableGrid, backButton } = this.props;
+
+    const { lightboxIsOpen, thumbnails } = this.state;
+    var images = thumbnails.map((item, idx) => {
+      if (typeof item.src !== 'undefined') item.idx = idx;
+      return this.renderItem(item);
     });
-    var resizeIframeStyles = {
-      height: 0,
-      margin: 0,
-      padding: 0,
-      overflow: 'hidden',
-      borderWidth: 0,
-      position: 'fixed',
-      backgroundColor: 'transparent',
-      width: '100%',
-    };
+    if (!DraggableGrid) images.unshift(backButton);
     return (
       <div id={this.props.id}
            className="ReactGridGallery"
            ref={(c) => this._gallery = c}>
-        <iframe style={resizeIframeStyles}
-                ref={(c) => c && c.contentWindow
-                  &&
-                  c.contentWindow.addEventListener('resize', this.onResize)} />
-        {images}
-        <Lightbox
-          images={this.props.images}
-          backdropClosesModal={this.props.backdropClosesModal}
-          currentImage={this.state.currentImage}
-          preloadNextImage={this.props.preloadNextImage}
-          customControls={this.props.customControls}
-          enableKeyboardInput={this.props.enableKeyboardInput}
-          imageCountSeparator={this.props.imageCountSeparator}
-          isOpen={this.state.lightboxIsOpen}
-          onClickImage={this.getOnClickImageFn()}
-          onClickNext={this.getOnClickNextFn()}
-          onClickPrev={this.getOnClickPrevFn()}
-          showCloseButton={this.props.showCloseButton}
-          showImageCount={this.props.showImageCount}
-          onClose={this.closeLightbox}
-          width={this.props.lightboxWidth}
-          theme={this.props.theme}
-          onClickThumbnail={this.getOnClickLightboxThumbnailFn()}
-          showThumbnails={this.props.showLightboxThumbnails}
-        />
+        {DraggableGrid && images.length > 1 ?
+          <DraggableGrid items={thumbnails} bbtn={backButton}
+                         renderItem={this.renderItem} /> : images}
+        <ModalGateway>
+          {lightboxIsOpen && thumbnails.length ? (
+            <Modal onClose={this.closeLightbox}>
+              <Carousel views={thumbnails} />
+            </Modal>
+          ) : null}
+        </ModalGateway>
       </div>
     );
   }
