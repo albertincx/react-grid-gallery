@@ -10,6 +10,10 @@ New props:
 `isDraggable` (bool) - enable d'n'd feature         
  `onDrop` (func) - new items order handler 
 
+install
+
+    npm i github:albertincx/react-grid-gallery --save-dev
+
 
 # React Grid Gallery
 
