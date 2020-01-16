@@ -861,7 +861,8 @@ var Gallery = function (_Component) {
       }) : images, React.createElement(ModalGateway, null, lightboxIsOpen && thumbnails.length ? React.createElement(Modal, {
         onClose: this.closeLightbox
       }, React.createElement(Carousel, {
-        views: thumbnails
+        views: thumbnails,
+        currentIndex: this.state.currentImage
       })) : null));
     }
   }]);

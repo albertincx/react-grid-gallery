@@ -264,7 +264,10 @@ class Gallery extends Component {
         <ModalGateway>
           {lightboxIsOpen && thumbnails.length ? (
             <Modal onClose={this.closeLightbox}>
-              <Carousel views={thumbnails} />
+              <Carousel
+                views={thumbnails}
+                currentIndex={this.state.currentImage}
+              />
             </Modal>
           ) : null}
         </ModalGateway>
