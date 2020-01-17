@@ -111,7 +111,9 @@ class Demo0 extends React.Component {
                 <Gallery
             images={this.state.images}
             onSelectImage={this.onSelectImage}
-            showLightboxThumbnails={true}/>
+            showLightboxThumbnails={true}
+            isDraggable
+                />
                 </div>
                 </div>
         );

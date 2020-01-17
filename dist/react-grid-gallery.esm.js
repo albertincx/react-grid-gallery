@@ -4,11 +4,11 @@ import _possibleConstructorReturn from '@babel/runtime/helpers/esm/possibleConst
 import _getPrototypeOf from '@babel/runtime/helpers/esm/getPrototypeOf';
 import _assertThisInitialized from '@babel/runtime/helpers/esm/assertThisInitialized';
 import _inherits from '@babel/runtime/helpers/esm/inherits';
+import _defineProperty from '@babel/runtime/helpers/esm/defineProperty';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Carousel, { ModalGateway, Modal } from 'react-images';
 import _objectWithoutProperties from '@babel/runtime/helpers/esm/objectWithoutProperties';
-import _defineProperty from '@babel/runtime/helpers/esm/defineProperty';
 
 var CheckButton = function (_Component) {
   _inherits(CheckButton, _Component);
@@ -532,7 +532,9 @@ var BoxesGroup = function (_Component) {
           onDrop: _this.handleDrop(id)
         }, React.createElement("div", {
           className: "content"
-        }, _this.props.renderItem(el)));
+        }, _this.props.renderItem(_objectSpread({}, el, {
+          id: id
+        }))));
       });
     });
 
@@ -573,6 +575,15 @@ var Gallery = function (_Component) {
     _classCallCheck(this, Gallery);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Gallery).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "onDrop", function (thumbnails) {
+      _this.setState({
+        thumbnails: thumbnails
+      }, function () {
+        return _this.props.onDrop(thumbnails);
+      });
+    });
+
     _this.state = {
       images: _this.props.images,
       thumbnails: [],
@@ -846,7 +857,7 @@ var Gallery = function (_Component) {
           return _this2._gallery = c;
         }
       }, isDraggable && thumbnails.length ? React.createElement(BoxesGroup, {
-        onDrop: onDrop,
+        onDrop: this.onDrop,
         items: thumbnails,
         bbtn: backButton,
         renderItem: this.renderItem
@@ -928,7 +939,8 @@ Gallery.defaultProps = {
   showCloseButton: true,
   showImageCount: true,
   lightboxWidth: 1024,
-  showLightboxThumbnails: false
+  showLightboxThumbnails: false,
+  onDrop: function onDrop() {}
 };
 
 export default Gallery;

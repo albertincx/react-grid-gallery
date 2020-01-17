@@ -117,6 +117,23 @@
 
   var inherits = _inherits;
 
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  var defineProperty = _defineProperty;
+
   var CheckButton = function (_Component) {
     inherits(CheckButton, _Component);
 
@@ -578,23 +595,6 @@
 
   var objectWithoutProperties = _objectWithoutProperties;
 
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  var defineProperty = _defineProperty;
-
   function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -694,7 +694,9 @@
             onDrop: _this.handleDrop(id)
           }, React__default.createElement("div", {
             className: "content"
-          }, _this.props.renderItem(el)));
+          }, _this.props.renderItem(_objectSpread({}, el, {
+            id: id
+          }))));
         });
       });
 
@@ -735,6 +737,15 @@
       classCallCheck(this, Gallery);
 
       _this = possibleConstructorReturn(this, getPrototypeOf(Gallery).call(this, props));
+
+      defineProperty(assertThisInitialized(_this), "onDrop", function (thumbnails) {
+        _this.setState({
+          thumbnails: thumbnails
+        }, function () {
+          return _this.props.onDrop(thumbnails);
+        });
+      });
+
       _this.state = {
         images: _this.props.images,
         thumbnails: [],
@@ -1008,7 +1019,7 @@
             return _this2._gallery = c;
           }
         }, isDraggable && thumbnails.length ? React__default.createElement(BoxesGroup, {
-          onDrop: onDrop,
+          onDrop: this.onDrop,
           items: thumbnails,
           bbtn: backButton,
           renderItem: this.renderItem
@@ -1090,7 +1101,8 @@
     showCloseButton: true,
     showImageCount: true,
     lightboxWidth: 1024,
-    showLightboxThumbnails: false
+    showLightboxThumbnails: false,
+    onDrop: function onDrop() {}
   };
 
   return Gallery;

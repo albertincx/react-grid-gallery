@@ -211,6 +211,10 @@ class Gallery extends Component {
     return thumbs;
   }
 
+  onDrop = (thumbnails) => {
+    this.setState({ thumbnails }, () => this.props.onDrop(thumbnails));
+  };
+
   renderItem(item) {
     let idx = item.idx;
     return <Image
@@ -245,7 +249,7 @@ class Gallery extends Component {
            ref={(c) => this._gallery = c}>
         {isDraggable && thumbnails.length ? (
           <DraggableGrid
-            onDrop={onDrop}
+            onDrop={this.onDrop}
             items={thumbnails}
             bbtn={backButton}
             renderItem={this.renderItem}
@@ -342,6 +346,7 @@ Gallery.defaultProps = {
   showImageCount: true,
   lightboxWidth: 1024,
   showLightboxThumbnails: false,
+  onDrop: () => {},
 };
 
 export default Gallery;

@@ -61,7 +61,7 @@ class BoxesGroup extends Component {
         onDragOver={this.handleDragOver()}
         onDrop={this.handleDrop(id)}
       >
-        <div className="content">{this.props.renderItem(el)}</div>
+        <div className="content">{this.props.renderItem({ ...el, id })}</div>
       </div>
     ));
   };

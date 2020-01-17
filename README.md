@@ -13,6 +13,10 @@ New props:
 install
 
     npm i github:albertincx/react-grid-gallery --save-dev
+demo
+
+    npm run build && npm run start
+
 
 
 # React Grid Gallery

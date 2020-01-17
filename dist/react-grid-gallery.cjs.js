@@ -8,13 +8,13 @@ var _possibleConstructorReturn = _interopDefault(require('@babel/runtime/helpers
 var _getPrototypeOf = _interopDefault(require('@babel/runtime/helpers/getPrototypeOf'));
 var _assertThisInitialized = _interopDefault(require('@babel/runtime/helpers/assertThisInitialized'));
 var _inherits = _interopDefault(require('@babel/runtime/helpers/inherits'));
+var _defineProperty = _interopDefault(require('@babel/runtime/helpers/defineProperty'));
 var PropTypes = _interopDefault(require('prop-types'));
 var React = require('react');
 var React__default = _interopDefault(React);
 var Carousel = require('react-images');
 var Carousel__default = _interopDefault(Carousel);
 var _objectWithoutProperties = _interopDefault(require('@babel/runtime/helpers/objectWithoutProperties'));
-var _defineProperty = _interopDefault(require('@babel/runtime/helpers/defineProperty'));
 
 var CheckButton = function (_Component) {
   _inherits(CheckButton, _Component);
@@ -538,7 +538,9 @@ var BoxesGroup = function (_Component) {
           onDrop: _this.handleDrop(id)
         }, React__default.createElement("div", {
           className: "content"
-        }, _this.props.renderItem(el)));
+        }, _this.props.renderItem(_objectSpread({}, el, {
+          id: id
+        }))));
       });
     });
 
@@ -579,6 +581,15 @@ var Gallery = function (_Component) {
     _classCallCheck(this, Gallery);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Gallery).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_this), "onDrop", function (thumbnails) {
+      _this.setState({
+        thumbnails: thumbnails
+      }, function () {
+        return _this.props.onDrop(thumbnails);
+      });
+    });
+
     _this.state = {
       images: _this.props.images,
       thumbnails: [],
@@ -852,7 +863,7 @@ var Gallery = function (_Component) {
           return _this2._gallery = c;
         }
       }, isDraggable && thumbnails.length ? React__default.createElement(BoxesGroup, {
-        onDrop: onDrop,
+        onDrop: this.onDrop,
         items: thumbnails,
         bbtn: backButton,
         renderItem: this.renderItem
@@ -934,7 +945,8 @@ Gallery.defaultProps = {
   showCloseButton: true,
   showImageCount: true,
   lightboxWidth: 1024,
-  showLightboxThumbnails: false
+  showLightboxThumbnails: false,
+  onDrop: function onDrop() {}
 };
 
 module.exports = Gallery;
