@@ -64,7 +64,82 @@ const umdConfig = ({ minify } = {}) => ({
     filesize(),
   ],
 });
+const useESModules = false;
+const umdConfigDev = ({ minify = true } = { minify: true }) => ({
 
+  input: 'examples/app.js',
+  output: {
+    name: 'ReactGridGallery',
+    file: 'public/bundle.js',
+    format: 'cjs',
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+      'prop-types': 'PropTypes',
+      'react-images': 'Carousel',
+    },
+  },
+  plugins: [
+    resolve({
+      main: true,
+      extensions: ['.js', '.jsx'],
+    }),
+    commonjs({
+      include: [
+        'node_modules/**',
+      ],
+      exclude: [
+        'node_modules/process-es6/**',
+      ],
+      namedExports: {
+        'node_modules/react/index.js': [
+          'Children',
+          'Component',
+          'PureComponent',
+          'PropTypes',
+          'createElement',
+          'Fragment',
+          'cloneElement',
+          'StrictMode',
+          'createFactory',
+          'createRef',
+          'createContext',
+          'isValidElement',
+          'isValidElementType',
+        ],
+        'node_modules/react-dom/index.js': [
+          'render',
+          'findDOMNode',
+          'hydrate',
+          'createPortal',
+        ],
+      },
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+
+    babel({
+      runtimeHelpers: true,
+      babelrc: false,
+      exclude: 'node_modules/**',
+      presets: [
+        '@babel/preset-react',
+        [
+          '@babel/preset-env',
+          {
+            modules: false,
+          },
+        ],
+      ],
+      plugins: [
+        '@babel/plugin-proposal-class-properties',
+        ['@babel/transform-runtime', { useESModules, regenerator: false }],
+        ['babel-plugin-transform-async-to-promises', { inlineHelpers: true }],
+      ],
+    }),
+  ],
+});
 const rollupConfig = [
   // Browser-friendly UMD builds
   umdConfig(),
@@ -87,6 +162,7 @@ const rollupConfig = [
     output: [{ file: pkg.module, format: 'esm' }],
     plugins: [resolve(), babel(babelConfig()), filesize()],
   },
+  umdConfigDev(),
 ];
 
 export default rollupConfig;
