@@ -31,16 +31,6 @@ class Gallery extends Component {
     this.onResize();
   }
 
-  componentWillReceiveProps(np) {
-    if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
-      this.setState({
-        images: np.images,
-        thumbnails: this.renderThumbs(this._gallery.clientWidth,
-          np.images),
-      });
-    }
-  }
-
   componentDidUpdate() {
     if (!this._gallery) return;
     if (this._gallery.clientWidth
