@@ -309,7 +309,7 @@ var Image = function (_Component) {
         }, tag.value));
       });
       var customOverlay = typeof this.props.item.customOverlay === 'undefined' ? React__default.createElement("noscript", null) : React__default.createElement("div", {
-        className: "custom-overlay",
+        className: "ReactGridGallery_custom-overlay",
         key: 'custom-overlay-' + this.props.index,
         style: {
           pointerEvents: 'none',
@@ -335,7 +335,7 @@ var Image = function (_Component) {
       }
 
       return React__default.createElement("div", {
-        className: "tile",
+        className: "ReactGridGallery_tile",
         key: 'tile-' + this.props.index,
         onMouseEnter: function onMouseEnter(e) {
           return _this2.setState({
@@ -356,7 +356,7 @@ var Image = function (_Component) {
           padding: '0px'
         }
       }, React__default.createElement("div", {
-        className: "tile-icon-bar",
+        className: "ReactGridGallery_tile-icon-bar",
         key: 'tile-icon-bar-' + this.props.index,
         style: {
           pointerEvents: 'none',
@@ -366,7 +366,7 @@ var Image = function (_Component) {
           width: '100%'
         }
       }, this.renderCheckButton()), React__default.createElement("div", {
-        className: "tile-bottom-bar",
+        className: "ReactGridGallery_tile-bottom-bar",
         key: 'tile-bottom-bar-' + this.props.index,
         style: {
           padding: '2px',
@@ -379,7 +379,7 @@ var Image = function (_Component) {
           overflow: 'hidden'
         }
       }, tags), customOverlay, React__default.createElement("div", {
-        className: "tile-overlay",
+        className: "ReactGridGallery_tile-overlay",
         key: 'tile-overlay-' + this.props.index,
         style: {
           pointerEvents: 'none',
@@ -390,7 +390,7 @@ var Image = function (_Component) {
           background: this.state.hover && !this.props.item.isSelected && this.props.isSelectable ? 'linear-gradient(to bottom,rgba(0,0,0,0.26),transparent 56px,transparent)' : 'none'
         }
       }), React__default.createElement("div", {
-        className: "tile-viewport",
+        className: "ReactGridGallery_tile-viewport",
         style: this.tileViewportStyle(),
         key: 'tile-viewport-' + this.props.index,
         onClick: propClick
@@ -403,7 +403,7 @@ var Image = function (_Component) {
       }) : DirItem ? React__default.createElement(DirItem, {
         item: this.props.item
       }) : null), this.props.item.thumbnailCaption && React__default.createElement("div", {
-        className: "tile-description",
+        className: "ReactGridGallery_tile-description",
         style: {
           background: 'white',
           height: '100%',
@@ -600,16 +600,6 @@ var Gallery = function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.onResize();
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(np) {
-      if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
-        this.setState({
-          images: np.images,
-          thumbnails: this.renderThumbs(this._gallery.clientWidth, np.images)
-        });
-      }
     }
   }, {
     key: "componentDidUpdate",
