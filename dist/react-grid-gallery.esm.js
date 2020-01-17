@@ -482,7 +482,9 @@ var BoxesGroup = function (_Component) {
         _this.setState({
           boxes: boxes
         }, function () {
-          return _this.props.onDrop(boxes);
+          return _this.props.onDrop(boxes.map(function (b) {
+            return b.el;
+          }));
         });
       }
     });
@@ -518,24 +520,29 @@ var BoxesGroup = function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "makeBoxes", function () {
-      return _this.state.boxes.map(function (box) {
+      return _this.state.boxes.map(function (_ref) {
+        var el = _ref.el,
+            id = _ref.id;
         return React.createElement("div", {
-          key: box.id,
+          key: id,
           className: "box",
           draggable: true,
-          onDragStart: _this.handleDragStart(box.id),
+          onDragStart: _this.handleDragStart(id),
           onDragOver: _this.handleDragOver(),
-          onDrop: _this.handleDrop(box.id)
+          onDrop: _this.handleDrop(id)
         }, React.createElement("div", {
           className: "content"
-        }, _this.props.renderItem(box)));
+        }, _this.props.renderItem(el)));
       });
     });
 
     var _boxes = props.items.map(function (el, ind) {
-      return _objectSpread({}, el, {
-        id: ind
-      });
+      return {
+        el: el,
+        id: ind,
+        name: 'BOX1',
+        color: 'red'
+      };
     });
 
     _this.state = {
