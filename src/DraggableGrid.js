@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class BoxesGroup extends Component {
   constructor(props) {
     super(props);
-    let boxes = props.items.map((el, ind) => ({ el, id: ind, name: 'BOX1', color: 'red' }));
+    let boxes = props.items.map((el, ind) => ({ ...el, id: ind }));
     this.state = { boxes };
   }
 
@@ -49,16 +49,16 @@ class BoxesGroup extends Component {
   };
 
   makeBoxes = () => {
-    return this.state.boxes.map(({ id, el }) => (
+    return this.state.boxes.map((box) => (
       <div
-        key={id}
+        key={box.id}
         className="box"
         draggable
-        onDragStart={this.handleDragStart(id)}
+        onDragStart={this.handleDragStart(box.id)}
         onDragOver={this.handleDragOver()}
-        onDrop={this.handleDrop(id)}
+        onDrop={this.handleDrop(box.id)}
       >
-        <div className="content">{this.props.renderItem(el)}</div>
+        <div className="content">{this.props.renderItem(box)}</div>
       </div>
     ));
   };
