@@ -336,4 +336,4 @@ Demo0.defaultProps = {
   ]).splice(0, 16),
 };
 
-ReactDOM.render(<Demo0/>, document.getElementById('demo0'));
+ReactDOM.render(<Demo0/>, document.getElementById('app'));

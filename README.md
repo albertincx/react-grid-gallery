@@ -18,10 +18,13 @@ update in your project
 
     npm update
 
-demo
+demo dev
 
     npm run build && npm run start
 
+demo
+
+https://safiullin.io/projects/react-gallery/
 
 
 # React Grid Gallery

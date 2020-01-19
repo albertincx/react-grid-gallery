@@ -31,10 +31,20 @@ class Gallery extends Component {
     this.onResize();
   }
 
+  UNSAFE_componentWillReceiveProps(np) {
+    if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
+      this.setState({
+        images: np.images,
+        thumbnails: this.renderThumbs(this._gallery.clientWidth,
+            np.images),
+      });
+    }
+  }
+
   componentDidUpdate() {
     if (!this._gallery) return;
     if (this._gallery.clientWidth
-      !== this.state.containerWidth) {
+        !== this.state.containerWidth) {
       this.onResize();
     }
   }
@@ -177,8 +187,8 @@ class Gallery extends Component {
 
   setThumbScale(item) {
     item.scaletwidth =
-      Math.floor(this.props.rowHeight
-        * (item.thumbnailWidth / item.thumbnailHeight));
+        Math.floor(this.props.rowHeight
+            * (item.thumbnailWidth / item.thumbnailHeight));
   }
 
   renderThumbs(containerWidth, images = this.state.images) {
@@ -218,19 +228,18 @@ class Gallery extends Component {
   renderItem(item) {
     let idx = item.idx;
     return <Image
-      key={'Image-' + idx + '-' + item.src}
-      isDir={typeof item.src === 'undefined'}
-      item={item}
-      index={idx}
-      DirItem={this.props.DirItem}
-      margin={this.props.margin}
-      height={this.props.rowHeight}
-      isSelectable={this.props.enableImageSelection}
-      onClick={this.getOnClickThumbnailFn()}
-      onSelectImage={this.onSelectImage}
-      tagStyle={this.props.tagStyle}
-      tileViewportStyle={this.props.tileViewportStyle}
-      thumbnailStyle={this.props.thumbnailStyle}
+        key={'Image-' + idx + '-' + item.src}
+        item={item}
+        index={idx}
+        DirItem={this.props.DirItem}
+        margin={this.props.margin}
+        height={this.props.rowHeight}
+        isSelectable={this.props.enableImageSelection}
+        onClick={this.getOnClickThumbnailFn()}
+        onSelectImage={this.onSelectImage}
+        tagStyle={this.props.tagStyle}
+        tileViewportStyle={this.props.tileViewportStyle}
+        thumbnailStyle={this.props.thumbnailStyle}
     />;
   }
 
@@ -244,28 +253,28 @@ class Gallery extends Component {
     });
     if (!isDraggable) images.unshift(backButton);
     return (
-      <div id={this.props.id}
-           className="ReactGridGallery"
-           ref={(c) => this._gallery = c}>
-        {isDraggable && thumbnails.length ? (
-          <DraggableGrid
-            onDrop={this.onDrop}
-            items={thumbnails}
-            bbtn={backButton}
-            renderItem={this.renderItem}
-          />
-        ) : images}
-        <ModalGateway>
-          {lightboxIsOpen && thumbnails.length ? (
-            <Modal onClose={this.closeLightbox}>
-              <Carousel
-                views={thumbnails}
-                currentIndex={this.state.currentImage}
+        <div id={this.props.id}
+             className="ReactGridGallery"
+             ref={(c) => this._gallery = c}>
+          {isDraggable && thumbnails.length ? (
+              <DraggableGrid
+                  onDrop={this.onDrop}
+                  items={thumbnails}
+                  bbtn={backButton}
+                  renderItem={this.renderItem}
               />
-            </Modal>
-          ) : null}
-        </ModalGateway>
-      </div>
+          ) : images}
+          <ModalGateway>
+            {lightboxIsOpen && thumbnails.length ? (
+                <Modal onClose={this.closeLightbox}>
+                  <Carousel
+                      views={thumbnails}
+                      currentIndex={this.state.currentImage}
+                  />
+                </Modal>
+            ) : null}
+          </ModalGateway>
+        </div>
     );
   }
 }
@@ -274,27 +283,27 @@ Gallery.displayName = 'Gallery';
 
 Gallery.propTypes = {
   images: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string.isRequired,
-      nano: PropTypes.string,
-      alt: PropTypes.string,
-      thumbnail: PropTypes.string.isRequired,
-      srcset: PropTypes.array,
-      caption: PropTypes.string,
-      tags: PropTypes.arrayOf(
-        PropTypes.shape({
-          value: PropTypes.string.isRequired,
-          title: PropTypes.string.isRequired,
-        }),
-      ),
-      thumbnailWidth: PropTypes.number.isRequired,
-      thumbnailHeight: PropTypes.number.isRequired,
-      isSelected: PropTypes.bool,
-      thumbnailCaption: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element,
-      ]),
-    }),
+      PropTypes.shape({
+        src: PropTypes.string.isRequired,
+        nano: PropTypes.string,
+        alt: PropTypes.string,
+        thumbnail: PropTypes.string.isRequired,
+        srcset: PropTypes.array,
+        caption: PropTypes.string,
+        tags: PropTypes.arrayOf(
+            PropTypes.shape({
+              value: PropTypes.string.isRequired,
+              title: PropTypes.string.isRequired,
+            }),
+        ),
+        thumbnailWidth: PropTypes.number.isRequired,
+        thumbnailHeight: PropTypes.number.isRequired,
+        isSelected: PropTypes.bool,
+        thumbnailCaption: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.element,
+        ]),
+      }),
   ).isRequired,
   id: PropTypes.string,
   enableImageSelection: PropTypes.bool,
