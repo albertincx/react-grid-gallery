@@ -615,6 +615,16 @@ var Gallery = function (_Component) {
       this.onResize();
     }
   }, {
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(np) {
+      if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
+        this.setState({
+          images: np.images,
+          thumbnails: this.renderThumbs(this._gallery.clientWidth, np.images)
+        });
+      }
+    }
+  }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
       if (!this._gallery) return;
@@ -825,7 +835,6 @@ var Gallery = function (_Component) {
       var idx = item.idx;
       return React__default.createElement(Image, {
         key: 'Image-' + idx + '-' + item.src,
-        isDir: typeof item.src === 'undefined',
         item: item,
         index: idx,
         DirItem: this.props.DirItem,
