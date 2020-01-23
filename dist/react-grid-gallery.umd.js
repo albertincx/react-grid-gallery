@@ -700,17 +700,8 @@
         });
       });
 
-      var _boxes = props.items.map(function (el, ind) {
-        return {
-          el: el,
-          id: ind,
-          name: 'BOX1',
-          color: 'red'
-        };
-      });
-
       _this.state = {
-        boxes: _boxes
+        boxes: []
       };
       return _this;
     }
@@ -722,6 +713,21 @@
         return React__default.createElement("div", {
           className: "boxesGroup"
         }, bbtn, this.makeBoxes());
+      }
+    }], [{
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props, state) {
+        var boxes = props.items.map(function (el, ind) {
+          return {
+            el: el,
+            id: ind,
+            name: 'BOX1',
+            color: 'red'
+          };
+        });
+        return {
+          boxes: boxes
+        };
       }
     }]);
 

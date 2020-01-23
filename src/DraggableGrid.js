@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 class BoxesGroup extends Component {
   constructor(props) {
     super(props);
-    let boxes = props.items.map(
-      (el, ind) => ({ el, id: ind, name: 'BOX1', color: 'red' }));
-
-    this.state = { boxes };
+    this.state = { boxes: [] };
   }
 
   swapBoxes = (fromBox, toBox) => {
@@ -65,6 +62,12 @@ class BoxesGroup extends Component {
       </div>
     ));
   };
+
+  static getDerivedStateFromProps(props, state) {
+    let boxes = props.items.map(
+      (el, ind) => ({ el, id: ind, name: 'BOX1', color: 'red' }));
+    return { boxes };
+  }
 
   render() {
     const { bbtn } = this.props;
