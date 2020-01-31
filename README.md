@@ -12,7 +12,7 @@ New props:
 
 install
 
-    npm i github:albertincx/react-grid-gallery
+    npm i @albertincx/react-grid-gallery
 
 update in your project
 
