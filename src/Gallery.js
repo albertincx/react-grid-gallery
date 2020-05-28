@@ -15,8 +15,10 @@ class Gallery extends Component {
       currentImage: this.props.currentImage,
       containerWidth: 0,
     };
+    Gallery.rowHeight = this.props.rowHeight;
+    Gallery.margin = this.props.margin;
+    Gallery.maxRows = this.props.maxRows;
 
-    this.onResize = this.onResize.bind(this);
     this.closeLightbox = this.closeLightbox.bind(this);
     this.gotoImage = this.gotoImage.bind(this);
     this.gotoNext = this.gotoNext.bind(this);
@@ -27,11 +29,26 @@ class Gallery extends Component {
     this.renderItem = this.renderItem.bind(this);
   }
 
+  static rowHeight;
+  static margin;
+  static maxRows;
+
   componentDidMount() {
     this.onResize();
   }
 
-  UNSAFE_componentWillReceiveProps(np) {
+  static getDerivedStateFromProps(props, state) {
+    console.log(props.images);
+    if (state.images !== props.images || props.maxRows !== props.maxRows) {
+      return {
+        images: props.images,
+        thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, props.images),
+      };
+    }
+    return null;
+  }
+
+  /*UNSAFE_componentWillReceiveProps(np) {
     if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
       this.setState({
         images: np.images,
@@ -39,23 +56,23 @@ class Gallery extends Component {
             np.images),
       });
     }
-  }
+  }*/
 
   componentDidUpdate() {
-    if (!this._gallery) return;
-    if (this._gallery.clientWidth
-        !== this.state.containerWidth) {
+    if (!Gallery._gallery) return;
+    if (Gallery._gallery.clientWidth
+      !== this.state.containerWidth) {
       this.onResize();
     }
   }
 
-  onResize() {
-    if (!this._gallery) return;
+  onResize = () => {
+    if (!Gallery._gallery) return;
     this.setState({
-      containerWidth: Math.floor(this._gallery.clientWidth),
-      thumbnails: this.renderThumbs(this._gallery.clientWidth),
+      containerWidth: Math.floor(Gallery._gallery.clientWidth),
+      thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, this.state.images),
     });
-  }
+  };
 
   openLightbox(index, event) {
     if (event) {
@@ -135,7 +152,7 @@ class Gallery extends Component {
     return null;
   }
 
-  calculateCutOff(len, delta, items) {
+  static calculateCutOff(len, delta, items) {
     var cutoff = [];
     var cutsum = 0;
     for (var i in items) {
@@ -156,10 +173,10 @@ class Gallery extends Component {
     return cutoff;
   }
 
-  buildImageRow(items, containerWidth) {
+  static buildImageRow(items, containerWidth) {
     var row = [];
     var len = 0;
-    var imgMargin = 2 * this.props.margin;
+    var imgMargin = 2 * Gallery.margin;
     while (items.length > 0 && len < containerWidth) {
       var item = items.shift();
       row.push(item);
@@ -168,7 +185,7 @@ class Gallery extends Component {
 
     var delta = len - containerWidth;
     if (row.length > 0 && delta > 0) {
-      var cutoff = this.calculateCutOff(len, delta, row);
+      var cutoff = Gallery.calculateCutOff(len, delta, row);
       for (var i in row) {
         var pixelsToRemove = cutoff[i];
         item = row[i];
@@ -185,32 +202,32 @@ class Gallery extends Component {
     return row;
   }
 
-  setThumbScale(item) {
+  static setThumbScale(item) {
     item.scaletwidth =
-        Math.floor(this.props.rowHeight
-            * (item.thumbnailWidth / item.thumbnailHeight));
+      Math.floor(Gallery.rowHeight
+        * (item.thumbnailWidth / item.thumbnailHeight));
   }
 
-  renderThumbs(containerWidth, images = this.state.images) {
+  static renderThumbs(containerWidth, images = []) {
     if (!images) return [];
     if (containerWidth === 0) return [];
 
     var items = images.slice();
     for (var t in items) {
-      this.setThumbScale(items[t]);
+      Gallery.setThumbScale(items[t]);
     }
 
     var thumbs = [];
     var rows = [];
     while (items.length > 0) {
-      rows.push(this.buildImageRow(items, containerWidth));
+      rows.push(Gallery.buildImageRow(items, containerWidth));
     }
 
     for (var r in rows) {
       for (var i in rows[r]) {
         var item = rows[r][i];
-        if (this.props.maxRows) {
-          if (r < this.props.maxRows) {
+        if (Gallery.maxRows) {
+          if (r < Gallery.maxRows) {
             thumbs.push(item);
           }
         } else {
@@ -222,24 +239,25 @@ class Gallery extends Component {
   }
 
   onDrop = (thumbnails) => {
+    // this.props.onDrop(thumbnails)
     this.setState({ thumbnails }, () => this.props.onDrop(thumbnails));
   };
 
   renderItem(item) {
     let idx = item.idx;
     return <Image
-        key={'Image-' + idx + '-' + item.src}
-        item={item}
-        index={idx}
-        DirItem={this.props.DirItem}
-        margin={this.props.margin}
-        height={this.props.rowHeight}
-        isSelectable={this.props.enableImageSelection}
-        onClick={this.getOnClickThumbnailFn()}
-        onSelectImage={this.onSelectImage}
-        tagStyle={this.props.tagStyle}
-        tileViewportStyle={this.props.tileViewportStyle}
-        thumbnailStyle={this.props.thumbnailStyle}
+      key={'Image-' + idx + '-' + item.src}
+      item={item}
+      index={idx}
+      DirItem={this.props.DirItem}
+      margin={this.props.margin}
+      height={this.props.rowHeight}
+      isSelectable={this.props.enableImageSelection}
+      onClick={this.getOnClickThumbnailFn()}
+      onSelectImage={this.onSelectImage}
+      tagStyle={this.props.tagStyle}
+      tileViewportStyle={this.props.tileViewportStyle}
+      thumbnailStyle={this.props.thumbnailStyle}
     />;
   }
 
@@ -247,34 +265,35 @@ class Gallery extends Component {
     const { isDraggable, onDrop, backButton } = this.props;
 
     const { lightboxIsOpen, thumbnails } = this.state;
+    // console.log(thumbnails);
     var images = thumbnails.map((item, idx) => {
       if (typeof item.src !== 'undefined') item.idx = idx;
       return this.renderItem(item);
     });
     if (!isDraggable) images.unshift(backButton);
     return (
-        <div id={this.props.id}
-             className="ReactGridGallery"
-             ref={(c) => this._gallery = c}>
-          {isDraggable && thumbnails.length ? (
-              <DraggableGrid
-                  onDrop={this.onDrop}
-                  items={thumbnails}
-                  bbtn={backButton}
-                  renderItem={this.renderItem}
+      <div id={this.props.id}
+           className="ReactGridGallery"
+           ref={(c) => Gallery._gallery = c}>
+        {isDraggable && thumbnails.length ? (
+          <DraggableGrid
+            onDrop={this.onDrop}
+            items={thumbnails}
+            bbtn={backButton}
+            renderItem={this.renderItem}
+          />
+        ) : images}
+        <ModalGateway>
+          {lightboxIsOpen && thumbnails.length ? (
+            <Modal onClose={this.closeLightbox}>
+              <Carousel
+                views={thumbnails}
+                currentIndex={this.state.currentImage}
               />
-          ) : images}
-          <ModalGateway>
-            {lightboxIsOpen && thumbnails.length ? (
-                <Modal onClose={this.closeLightbox}>
-                  <Carousel
-                      views={thumbnails}
-                      currentIndex={this.state.currentImage}
-                  />
-                </Modal>
-            ) : null}
-          </ModalGateway>
-        </div>
+            </Modal>
+          ) : null}
+        </ModalGateway>
+      </div>
     );
   }
 }
@@ -283,27 +302,27 @@ Gallery.displayName = 'Gallery';
 
 Gallery.propTypes = {
   images: PropTypes.arrayOf(
-      PropTypes.shape({
-        src: PropTypes.string.isRequired,
-        nano: PropTypes.string,
-        alt: PropTypes.string,
-        thumbnail: PropTypes.string.isRequired,
-        srcset: PropTypes.array,
-        caption: PropTypes.string,
-        tags: PropTypes.arrayOf(
-            PropTypes.shape({
-              value: PropTypes.string.isRequired,
-              title: PropTypes.string.isRequired,
-            }),
-        ),
-        thumbnailWidth: PropTypes.number.isRequired,
-        thumbnailHeight: PropTypes.number.isRequired,
-        isSelected: PropTypes.bool,
-        thumbnailCaption: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.element,
-        ]),
-      }),
+    PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      nano: PropTypes.string,
+      alt: PropTypes.string,
+      thumbnail: PropTypes.string.isRequired,
+      srcset: PropTypes.array,
+      caption: PropTypes.string,
+      tags: PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.string.isRequired,
+          title: PropTypes.string.isRequired,
+        }),
+      ),
+      thumbnailWidth: PropTypes.number.isRequired,
+      thumbnailHeight: PropTypes.number.isRequired,
+      isSelected: PropTypes.bool,
+      thumbnailCaption: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element,
+      ]),
+    }),
   ).isRequired,
   id: PropTypes.string,
   enableImageSelection: PropTypes.bool,
@@ -355,7 +374,8 @@ Gallery.defaultProps = {
   showImageCount: true,
   lightboxWidth: 1024,
   showLightboxThumbnails: false,
-  onDrop: () => {},
+  onDrop: () => {
+  },
 };
 
 export default Gallery;

@@ -514,7 +514,7 @@
           onClick: propClick
         }, !isDir ? React__default.createElement("img", {
           key: 'img-' + this.props.index,
-          src: this.props.item.thumbnail,
+          src: "".concat(this.props.item.thumbnail),
           alt: alt,
           title: this.props.item.caption,
           style: this.thumbnailStyle()
@@ -744,6 +744,15 @@
 
       _this = possibleConstructorReturn(this, getPrototypeOf(Gallery).call(this, props));
 
+      defineProperty(assertThisInitialized(_this), "onResize", function () {
+        if (!Gallery._gallery) return;
+
+        _this.setState({
+          containerWidth: Math.floor(Gallery._gallery.clientWidth),
+          thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, _this.state.images)
+        });
+      });
+
       defineProperty(assertThisInitialized(_this), "onDrop", function (thumbnails) {
         _this.setState({
           thumbnails: thumbnails
@@ -759,7 +768,9 @@
         currentImage: _this.props.currentImage,
         containerWidth: 0
       };
-      _this.onResize = _this.onResize.bind(assertThisInitialized(_this));
+      Gallery.rowHeight = _this.props.rowHeight;
+      Gallery.margin = _this.props.margin;
+      Gallery.maxRows = _this.props.maxRows;
       _this.closeLightbox = _this.closeLightbox.bind(assertThisInitialized(_this));
       _this.gotoImage = _this.gotoImage.bind(assertThisInitialized(_this));
       _this.gotoNext = _this.gotoNext.bind(assertThisInitialized(_this));
@@ -777,32 +788,13 @@
         this.onResize();
       }
     }, {
-      key: "UNSAFE_componentWillReceiveProps",
-      value: function UNSAFE_componentWillReceiveProps(np) {
-        if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
-          this.setState({
-            images: np.images,
-            thumbnails: this.renderThumbs(this._gallery.clientWidth, np.images)
-          });
-        }
-      }
-    }, {
       key: "componentDidUpdate",
       value: function componentDidUpdate() {
-        if (!this._gallery) return;
+        if (!Gallery._gallery) return;
 
-        if (this._gallery.clientWidth !== this.state.containerWidth) {
+        if (Gallery._gallery.clientWidth !== this.state.containerWidth) {
           this.onResize();
         }
-      }
-    }, {
-      key: "onResize",
-      value: function onResize() {
-        if (!this._gallery) return;
-        this.setState({
-          containerWidth: Math.floor(this._gallery.clientWidth),
-          thumbnails: this.renderThumbs(this._gallery.clientWidth)
-        });
       }
     }, {
       key: "openLightbox",
@@ -893,105 +885,6 @@
         return null;
       }
     }, {
-      key: "calculateCutOff",
-      value: function calculateCutOff(len, delta, items) {
-        var cutoff = [];
-        var cutsum = 0;
-
-        for (var i in items) {
-          var item = items[i];
-          var fractOfLen = item.scaletwidth / len;
-          cutoff[i] = Math.floor(fractOfLen * delta);
-          cutsum += cutoff[i];
-        }
-
-        var stillToCutOff = delta - cutsum;
-
-        while (stillToCutOff > 0) {
-          for (i in cutoff) {
-            cutoff[i]++;
-            stillToCutOff--;
-            if (stillToCutOff < 0) break;
-          }
-        }
-
-        return cutoff;
-      }
-    }, {
-      key: "buildImageRow",
-      value: function buildImageRow(items, containerWidth) {
-        var row = [];
-        var len = 0;
-        var imgMargin = 2 * this.props.margin;
-
-        while (items.length > 0 && len < containerWidth) {
-          var item = items.shift();
-          row.push(item);
-          len += item.scaletwidth + imgMargin;
-        }
-
-        var delta = len - containerWidth;
-
-        if (row.length > 0 && delta > 0) {
-          var cutoff = this.calculateCutOff(len, delta, row);
-
-          for (var i in row) {
-            var pixelsToRemove = cutoff[i];
-            item = row[i];
-            item.marginLeft = -Math.abs(Math.floor(pixelsToRemove / 2));
-            item.vwidth = item.scaletwidth - pixelsToRemove;
-          }
-        } else {
-          for (var j in row) {
-            item = row[j];
-            item.marginLeft = 0;
-            item.vwidth = item.scaletwidth;
-          }
-        }
-
-        return row;
-      }
-    }, {
-      key: "setThumbScale",
-      value: function setThumbScale(item) {
-        item.scaletwidth = Math.floor(this.props.rowHeight * (item.thumbnailWidth / item.thumbnailHeight));
-      }
-    }, {
-      key: "renderThumbs",
-      value: function renderThumbs(containerWidth) {
-        var images = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.images;
-        if (!images) return [];
-        if (containerWidth === 0) return [];
-        var items = images.slice();
-
-        for (var t in items) {
-          this.setThumbScale(items[t]);
-        }
-
-        var thumbs = [];
-        var rows = [];
-
-        while (items.length > 0) {
-          rows.push(this.buildImageRow(items, containerWidth));
-        }
-
-        for (var r in rows) {
-          for (var i in rows[r]) {
-            var item = rows[r][i];
-
-            if (this.props.maxRows) {
-              if (r < this.props.maxRows) {
-                thumbs.push(item);
-              }
-            } else {
-              thumbs.push(item);
-            }
-          }
-        }
-
-        return thumbs;
-      }
-    }, {
       key: "renderItem",
       value: function renderItem(item) {
         var idx = item.idx;
@@ -1031,7 +924,7 @@
           id: this.props.id,
           className: "ReactGridGallery",
           ref: function ref(c) {
-            return _this2._gallery = c;
+            return Gallery._gallery = c;
           }
         }, isDraggable && thumbnails.length ? React__default.createElement(BoxesGroup, {
           onDrop: this.onDrop,
@@ -1045,10 +938,129 @@
           currentIndex: this.state.currentImage
         })) : null));
       }
+    }], [{
+      key: "getDerivedStateFromProps",
+      value: function getDerivedStateFromProps(props, state) {
+        console.log(props.images);
+
+        if (state.images !== props.images || props.maxRows !== props.maxRows) {
+          return {
+            images: props.images,
+            thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, props.images)
+          };
+        }
+
+        return null;
+      }
+    }, {
+      key: "calculateCutOff",
+      value: function calculateCutOff(len, delta, items) {
+        var cutoff = [];
+        var cutsum = 0;
+
+        for (var i in items) {
+          var item = items[i];
+          var fractOfLen = item.scaletwidth / len;
+          cutoff[i] = Math.floor(fractOfLen * delta);
+          cutsum += cutoff[i];
+        }
+
+        var stillToCutOff = delta - cutsum;
+
+        while (stillToCutOff > 0) {
+          for (i in cutoff) {
+            cutoff[i]++;
+            stillToCutOff--;
+            if (stillToCutOff < 0) break;
+          }
+        }
+
+        return cutoff;
+      }
+    }, {
+      key: "buildImageRow",
+      value: function buildImageRow(items, containerWidth) {
+        var row = [];
+        var len = 0;
+        var imgMargin = 2 * Gallery.margin;
+
+        while (items.length > 0 && len < containerWidth) {
+          var item = items.shift();
+          row.push(item);
+          len += item.scaletwidth + imgMargin;
+        }
+
+        var delta = len - containerWidth;
+
+        if (row.length > 0 && delta > 0) {
+          var cutoff = Gallery.calculateCutOff(len, delta, row);
+
+          for (var i in row) {
+            var pixelsToRemove = cutoff[i];
+            item = row[i];
+            item.marginLeft = -Math.abs(Math.floor(pixelsToRemove / 2));
+            item.vwidth = item.scaletwidth - pixelsToRemove;
+          }
+        } else {
+          for (var j in row) {
+            item = row[j];
+            item.marginLeft = 0;
+            item.vwidth = item.scaletwidth;
+          }
+        }
+
+        return row;
+      }
+    }, {
+      key: "setThumbScale",
+      value: function setThumbScale(item) {
+        item.scaletwidth = Math.floor(Gallery.rowHeight * (item.thumbnailWidth / item.thumbnailHeight));
+      }
+    }, {
+      key: "renderThumbs",
+      value: function renderThumbs(containerWidth) {
+        var images = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        if (!images) return [];
+        if (containerWidth === 0) return [];
+        var items = images.slice();
+
+        for (var t in items) {
+          Gallery.setThumbScale(items[t]);
+        }
+
+        var thumbs = [];
+        var rows = [];
+
+        while (items.length > 0) {
+          rows.push(Gallery.buildImageRow(items, containerWidth));
+        }
+
+        for (var r in rows) {
+          for (var i in rows[r]) {
+            var item = rows[r][i];
+
+            if (Gallery.maxRows) {
+              if (r < Gallery.maxRows) {
+                thumbs.push(item);
+              }
+            } else {
+              thumbs.push(item);
+            }
+          }
+        }
+
+        return thumbs;
+      }
     }]);
 
     return Gallery;
   }(React.Component);
+
+  defineProperty(Gallery, "rowHeight", void 0);
+
+  defineProperty(Gallery, "margin", void 0);
+
+  defineProperty(Gallery, "maxRows", void 0);
 
   Gallery.displayName = 'Gallery';
   Gallery.propTypes = {

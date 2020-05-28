@@ -238,7 +238,7 @@ class Image extends Component {
              onClick={propClick}>
           {!isDir ? <img
             key={'img-' + this.props.index}
-            src={this.props.item.thumbnail}
+            src={`${this.props.item.thumbnail}`}
             alt={alt}
             title={this.props.item.caption}
             style={this.thumbnailStyle()} /> : (DirItem ? <DirItem
