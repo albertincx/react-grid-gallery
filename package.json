@@ -1,6 +1,6 @@
 {
   "name": "@albertincx/react-grid-gallery",
-  "version": "0.5.19",
+  "version": "0.5.20",
   "description": "Justified gallery component for React.",
   "main": "index.js",
   "src": "src/Gallery.js",
