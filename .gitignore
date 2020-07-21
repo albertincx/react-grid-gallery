@@ -1,5 +1,6 @@
 node_modules
 require.js
 *.bundle.js
+.idea
 examples/dist
 .publish

@@ -10,6 +10,7 @@ class Gallery extends Component {
 
     this.state = {
       images: this.props.images,
+      selLen: 0,
       thumbnails: [],
       lightboxIsOpen: this.props.isOpen,
       currentImage: this.props.currentImage,
@@ -38,26 +39,18 @@ class Gallery extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(props.images);
-    if (state.images !== props.images || props.maxRows !== props.maxRows) {
+    let selLen = props.images.filter(i => i.isSelected).length;
+    if (state.images !== props.images || props.maxRows !== props.maxRows ||
+      selLen !== state.selLen) {
       return {
         images: props.images,
-        thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, props.images),
+        selLen,
+        thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth,
+          props.images),
       };
     }
     return null;
   }
-
-  /*UNSAFE_componentWillReceiveProps(np) {
-    if (this.state.images !== np.images || this.props.maxRows !== np.maxRows) {
-      this.setState({
-        images: np.images,
-        thumbnails: this.renderThumbs(this._gallery.clientWidth,
-            np.images),
-      });
-    }
-  }*/
-
   componentDidUpdate() {
     if (!Gallery._gallery) return;
     if (Gallery._gallery.clientWidth
@@ -70,7 +63,8 @@ class Gallery extends Component {
     if (!Gallery._gallery) return;
     this.setState({
       containerWidth: Math.floor(Gallery._gallery.clientWidth),
-      thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, this.state.images),
+      thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth,
+        this.state.images),
     });
   };
 
@@ -262,10 +256,9 @@ class Gallery extends Component {
   }
 
   render() {
-    const { isDraggable, onDrop, backButton } = this.props;
+    const { isDraggable, backButton } = this.props;
 
     const { lightboxIsOpen, thumbnails } = this.state;
-    // console.log(thumbnails);
     var images = thumbnails.map((item, idx) => {
       if (typeof item.src !== 'undefined') item.idx = idx;
       return this.renderItem(item);

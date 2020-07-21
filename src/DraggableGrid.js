@@ -63,7 +63,7 @@ class BoxesGroup extends Component {
     ));
   };
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     let boxes = props.items.map(
       (el, ind) => ({ el, id: ind, name: 'BOX1', color: 'red' }));
     return { boxes };

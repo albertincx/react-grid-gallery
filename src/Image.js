@@ -84,8 +84,8 @@ class Image extends Component {
     }
     if (this.props.item.isSelected) {
       var ratio = (this.props.item.scaletwidth / this.props.height);
-      var height = 0;
-      var width = 0;
+      let height;
+      let width;
       var viewportHeight = (this.props.height - 32);
       var viewportWidth = (this.props.item.vwidth - 32);
 
@@ -166,7 +166,7 @@ class Image extends Component {
     if (this.props.DirItem) {
       DirItem = this.props.DirItem;
     }
-    let isDir = this.props.item.isDir;
+    let { isDir } = this.props.item;
     let propClick = this.props.onClick ?
       (e) => this.props.onClick.call(this, this.props.index, e) : null;
     if (isDir) {
@@ -175,8 +175,8 @@ class Image extends Component {
     return (
       <div className="ReactGridGallery_tile"
            key={'tile-' + this.props.index}
-           onMouseEnter={(e) => this.setState({ hover: true })}
-           onMouseLeave={(e) => this.setState({ hover: false })}
+           onMouseEnter={() => this.setState({ hover: true })}
+           onMouseLeave={() => this.setState({ hover: false })}
            style={{
              margin: this.props.margin,
              WebkitUserSelect: 'none',

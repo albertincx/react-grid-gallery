@@ -4,7 +4,7 @@
   (global = global || self, global.ReactGridGallery = factory(global.PropTypes, global.React, global.Carousel));
 }(this, (function (PropTypes, React, Carousel) { 'use strict';
 
-  PropTypes = PropTypes && PropTypes.hasOwnProperty('default') ? PropTypes['default'] : PropTypes;
+  PropTypes = PropTypes && Object.prototype.hasOwnProperty.call(PropTypes, 'default') ? PropTypes['default'] : PropTypes;
   var React__default = 'default' in React ? React['default'] : React;
   var Carousel__default = 'default' in Carousel ? Carousel['default'] : Carousel;
 
@@ -34,28 +34,6 @@
 
   var createClass = _createClass;
 
-  function createCommonjsModule(fn, module) {
-  	return module = { exports: {} }, fn(module, module.exports), module.exports;
-  }
-
-  var _typeof_1 = createCommonjsModule(function (module) {
-  function _typeof(obj) {
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      module.exports = _typeof = function _typeof(obj) {
-        return typeof obj;
-      };
-    } else {
-      module.exports = _typeof = function _typeof(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  module.exports = _typeof;
-  });
-
   function _assertThisInitialized(self) {
     if (self === void 0) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -66,26 +44,9 @@
 
   var assertThisInitialized = _assertThisInitialized;
 
-  function _possibleConstructorReturn(self, call) {
-    if (call && (_typeof_1(call) === "object" || typeof call === "function")) {
-      return call;
-    }
-
-    return assertThisInitialized(self);
+  function createCommonjsModule(fn, module) {
+  	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
-
-  var possibleConstructorReturn = _possibleConstructorReturn;
-
-  var getPrototypeOf = createCommonjsModule(function (module) {
-  function _getPrototypeOf(o) {
-    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-      return o.__proto__ || Object.getPrototypeOf(o);
-    };
-    return _getPrototypeOf(o);
-  }
-
-  module.exports = _getPrototypeOf;
-  });
 
   var setPrototypeOf = createCommonjsModule(function (module) {
   function _setPrototypeOf(o, p) {
@@ -117,6 +78,45 @@
 
   var inherits = _inherits;
 
+  var _typeof_1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (_typeof_1(call) === "object" || typeof call === "function")) {
+      return call;
+    }
+
+    return assertThisInitialized(self);
+  }
+
+  var possibleConstructorReturn = _possibleConstructorReturn;
+
+  var getPrototypeOf = createCommonjsModule(function (module) {
+  function _getPrototypeOf(o) {
+    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  module.exports = _getPrototypeOf;
+  });
+
   function _defineProperty(obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
@@ -134,15 +134,21 @@
 
   var defineProperty = _defineProperty;
 
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
   var CheckButton = function (_Component) {
     inherits(CheckButton, _Component);
+
+    var _super = _createSuper(CheckButton);
 
     function CheckButton(props) {
       var _this;
 
       classCallCheck(this, CheckButton);
 
-      _this = possibleConstructorReturn(this, getPrototypeOf(CheckButton).call(this, props));
+      _this = _super.call(this, props);
       _this.state = {
         hover: _this.props.hover
       };
@@ -187,12 +193,12 @@
           onClick: this.props.onClick ? function (e) {
             return _this2.props.onClick(_this2.props.index, e);
           } : null,
-          onMouseOver: function onMouseOver(e) {
+          onMouseOver: function onMouseOver() {
             return _this2.setState({
               hover: true
             });
           },
-          onMouseOut: function onMouseOut(e) {
+          onMouseOut: function onMouseOut() {
             return _this2.setState({
               hover: false
             });
@@ -260,15 +266,21 @@
     hover: false
   };
 
+  function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$1() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
   var Image = function (_Component) {
     inherits(Image, _Component);
+
+    var _super = _createSuper$1(Image);
 
     function Image(props) {
       var _this;
 
       classCallCheck(this, Image);
 
-      _this = possibleConstructorReturn(this, getPrototypeOf(Image).call(this, props));
+      _this = _super.call(this, props);
       _this.state = {
         hover: false
       };
@@ -357,8 +369,8 @@
 
         if (this.props.item.isSelected) {
           var ratio = this.props.item.scaletwidth / this.props.height;
-          var height = 0;
-          var width = 0;
+          var height;
+          var width;
           var viewportHeight = this.props.height - 32;
           var viewportWidth = this.props.item.vwidth - 32;
 
@@ -455,12 +467,12 @@
         return React__default.createElement("div", {
           className: "ReactGridGallery_tile",
           key: 'tile-' + this.props.index,
-          onMouseEnter: function onMouseEnter(e) {
+          onMouseEnter: function onMouseEnter() {
             return _this2.setState({
               hover: true
             });
           },
-          onMouseLeave: function onMouseLeave(e) {
+          onMouseLeave: function onMouseLeave() {
             return _this2.setState({
               hover: false
             });
@@ -599,15 +611,21 @@
 
   function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
+  function _createSuper$2(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$2(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
   var BoxesGroup = function (_Component) {
     inherits(BoxesGroup, _Component);
+
+    var _super = _createSuper$2(BoxesGroup);
 
     function BoxesGroup(props) {
       var _this;
 
       classCallCheck(this, BoxesGroup);
 
-      _this = possibleConstructorReturn(this, getPrototypeOf(BoxesGroup).call(this, props));
+      _this = _super.call(this, props);
 
       defineProperty(assertThisInitialized(_this), "swapBoxes", function (fromBox, toBox) {
         var boxes = _this.state.boxes.slice();
@@ -694,7 +712,7 @@
             onDrop: _this.handleDrop(id)
           }, React__default.createElement("div", {
             className: "content"
-          }, _this.props.renderItem(_objectSpread({}, el, {
+          }, _this.props.renderItem(_objectSpread(_objectSpread({}, el), {}, {
             id: id
           }))));
         });
@@ -716,7 +734,7 @@
       }
     }], [{
       key: "getDerivedStateFromProps",
-      value: function getDerivedStateFromProps(props, state) {
+      value: function getDerivedStateFromProps(props) {
         var boxes = props.items.map(function (el, ind) {
           return {
             el: el,
@@ -734,15 +752,21 @@
     return BoxesGroup;
   }(React.Component);
 
+  function _createSuper$3(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$3(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
   var Gallery = function (_Component) {
     inherits(Gallery, _Component);
+
+    var _super = _createSuper$3(Gallery);
 
     function Gallery(props) {
       var _this;
 
       classCallCheck(this, Gallery);
 
-      _this = possibleConstructorReturn(this, getPrototypeOf(Gallery).call(this, props));
+      _this = _super.call(this, props);
 
       defineProperty(assertThisInitialized(_this), "onResize", function () {
         if (!Gallery._gallery) return;
@@ -763,6 +787,7 @@
 
       _this.state = {
         images: _this.props.images,
+        selLen: 0,
         thumbnails: [],
         lightboxIsOpen: _this.props.isOpen,
         currentImage: _this.props.currentImage,
@@ -910,7 +935,6 @@
 
         var _this$props = this.props,
             isDraggable = _this$props.isDraggable,
-            onDrop = _this$props.onDrop,
             backButton = _this$props.backButton;
         var _this$state = this.state,
             lightboxIsOpen = _this$state.lightboxIsOpen,
@@ -941,11 +965,14 @@
     }], [{
       key: "getDerivedStateFromProps",
       value: function getDerivedStateFromProps(props, state) {
-        console.log(props.images);
+        var selLen = props.images.filter(function (i) {
+          return i.isSelected;
+        }).length;
 
-        if (state.images !== props.images || props.maxRows !== props.maxRows) {
+        if (state.images !== props.images || props.maxRows !== props.maxRows || selLen !== state.selLen) {
           return {
             images: props.images,
+            selLen: selLen,
             thumbnails: Gallery.renderThumbs(Gallery._gallery.clientWidth, props.images)
           };
         }

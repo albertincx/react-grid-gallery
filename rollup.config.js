@@ -65,7 +65,7 @@ const umdConfig = ({ minify } = {}) => ({
   ],
 });
 const useESModules = false;
-const umdConfigDev = ({ minify = true } = { minify: true }) => ({
+const umdConfigDev = ({} = { minify: true }) => ({
 
   input: 'examples/app.js',
   output: {

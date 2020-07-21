@@ -50,8 +50,8 @@ class CheckButton extends Component {
         onClick={this.props.onClick ?
           (e) => this.props.onClick(this.props.index, e) : null
         }
-        onMouseOver={(e) => this.setState({ hover: true })}
-        onMouseOut={(e) => this.setState({ hover: false })}>
+        onMouseOver={() => this.setState({ hover: true })}
+        onMouseOut={() => this.setState({ hover: false })}>
         <svg
           fill={this.fill()}
           height="24" viewBox="0 0 24 24"
